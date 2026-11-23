@@ -11,21 +11,33 @@ class CrearPlanViewModel : ViewModel() {
     var nombre by mutableStateOf("")
     var meta by mutableStateOf("")
     var fechaLimite by mutableStateOf("")
+    var mensajeError by mutableStateOf<String?>(null)
 
     fun construirPlan(): PlanAhorro? {
-        val metaValor = meta.toDoubleOrNull() ?: return null
-        if (nombre.isBlank() || fechaLimite.isBlank()) return null
+        val metaValor = meta.toDoubleOrNull()
+        if (nombre.isBlank()) {
+            mensajeError = "Ingresa un nombre para el plan"
+            return null
+        }
+        if (metaValor == null || metaValor <= 0) {
+            mensajeError = "Ingresa una meta válida mayor a $0"
+            return null
+        }
+        if (fechaLimite.isBlank()) {
+            mensajeError = "Selecciona una fecha límite"
+            return null
+        }
 
         val nuevo = PlanAhorro(
             id = UUID.randomUUID().toString(),
             nombre = nombre.trim(),
             meta = metaValor,
-            fechaLimite = fechaLimite.trim()
+            fechaLimite = fechaLimite
         )
-        // Limpiar campos
         nombre = ""
         meta = ""
         fechaLimite = ""
+        mensajeError = null
         return nuevo
     }
 }

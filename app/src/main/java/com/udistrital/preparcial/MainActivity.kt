@@ -83,17 +83,22 @@ class MainActivity : ComponentActivity() {
                                 pantallaActual = "home"
                             }
                         }
-
-                        "registro" -> RegistroScreen(
-                            viewModel = registroVM,
-                            onBack = { pantallaActual = "detalle" },
-                            onGuardarAporte = { nuevoAporte ->
-                                planSeleccionadoId?.let { id ->
-                                    homeVM.agregarAporte(id, nuevoAporte)
-                                }
-                                pantallaActual = "detalle"
+                        "registro" -> {
+                            val plan = homeVM.planes.find { it.id == planSeleccionadoId }
+                            if (plan != null) {
+                                RegistroScreen(
+                                    plan = plan,
+                                    viewModel = registroVM,
+                                    onBack = { pantallaActual = "detalle" },
+                                    onGuardarAporte = { nuevoAporte ->
+                                        homeVM.agregarAporte(plan.id, nuevoAporte)
+                                        pantallaActual = "detalle"
+                                    }
+                                )
+                            } else {
+                                pantallaActual = "home"
                             }
-                        )
+                        }
                     }
                 }
             }
